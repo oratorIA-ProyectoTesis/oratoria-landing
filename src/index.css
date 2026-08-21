@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@theme {
+  /* Misma identidad que el deck de la tesis: lime sobre negro. */
+  --color-ink: #050505;
+  --color-ink-raised: #101010;
+  --color-ink-line: #232323;
+  --color-paper: #fafaf8;
+  --color-paper-soft: #a8a8a2;
+  /* Aclarado desde #6b6b66, que sobre este negro daba ~4:1 y no alcanzaba el
+     mínimo AA para texto pequeño. Lo usan los rótulos y las notas al pie de
+     cada garantía, que es justamente donde está el detalle verificable. */
+  --color-paper-faint: #8a8a84;
+
+  --color-lime: #c6ff3d;
+  --color-lime-dim: #9ecc25;
+  /* Verde legible sobre fondo claro; el lime puro nunca funciona como texto ahí. */
+  --color-lime-deep: #4d7c0f;
+
+  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #050505;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-display);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Etiqueta monoespaciada: la usa cada sección como numeral y rótulo. */
+.rotulo {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-paper-faint);
+}
+
+/* Subrayado de acento: una regla sólida bajo la línea base, no un resaltador
+   translúcido. Sobre negro, el lime al 28 % da un verde oliva sucio y el
+   bloque encierra la frase en algo que parece una etiqueta; la regla sólida
+   resalta sin encerrar. Se dibuja con degradado y no con `border-bottom`
+   para que reaparezca en cada línea cuando el titular se parte en varias. */
+.marcado {
+  background-image: linear-gradient(to top, var(--color-lime) 0.075em, transparent 0.075em);
+  /* `no-repeat` no es opcional: con el mosaico por defecto y el desplazamiento
+     de abajo, el borde superior de cada línea muestra una tira de la baldosa
+     anterior y aparecen reglas fantasma bajo renglones que no llevan acento. */
+  background-repeat: no-repeat;
+  background-position: 0 0.04em;
+  padding-bottom: 0.06em;
+}
+
+::selection {
+  background: var(--color-lime);
+  color: #050505;
+}
+
+/* Respeta a quien pidió menos movimiento: la única animación de la página
+   es la aparición al hacer scroll, y no aporta información. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .aparece {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+.aparece {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.aparece[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
